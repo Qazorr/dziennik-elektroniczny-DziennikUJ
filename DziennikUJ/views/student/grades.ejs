@@ -1,0 +1,34 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend><h2>Oceny</h2></legend>
+        <div class="grades-wrapper">
+            <table>
+                <tr>
+                    <th>Przedmiot</th>
+                    <th>Oceny</th>
+                    <th>Średnia</th>
+                    <th>Ocena końcowa</th>
+                </tr>
+                <% for(var key in grades) { %>
+                    <tr>
+                        <th><%= key %></th>
+                        <td>
+                            <%= grades[key].toString().replaceAll(",", ", ") %>
+                        </td>
+                        <td>
+                            <% if (grades[key].length > 0) { %> 
+                                <%= (grades[key].reduce((a,b)=>a+b,0) / grades[key].length).toFixed(2) %>
+                            <% } %>
+                        </td>
+                        <td></td>
+                    </tr>
+                <% } %>
+            </table>
+        </div>
+    </fieldset>
+</div>
+
+<%- include('../templates/footer.ejs') %>

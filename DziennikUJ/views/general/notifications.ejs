@@ -1,0 +1,70 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend><h2>Powiadomienia</h2></legend>
+    <div class="notifications-wrapper">
+        <table>
+            <form action="" method="POST" id="send_form">
+            <tr>
+                <th>Zaznacz</th>
+                <th>Data</th>
+                <th>Tytuł</th>
+            </tr>
+                <% if (notifications.length == 0) { %>
+                    <td colspan="3">BRAK POWIADOMIEŃ</td>
+                <% } %>
+
+                <% for(var i=0; i<notifications.length; i++) { %>
+                    <tr>
+                        <td><input type="checkbox" name="note_id" id="checkbox" value="<%= notifications[i].wiadomosc_id %>"></td>
+                        <td>
+                            <% if (notifications[i].odczytana == 0) { %>
+                                <strong><%= notifications[i].data %></strong>
+                            <% } else { %>
+                                <%= notifications[i].data %>
+                            <% } %>
+                            
+                        </td>
+                        <td>
+                            <% if (notifications[i].odczytana == 0) { %>
+                                <strong><%= notifications[i].tytul %></strong>
+                            <% } else { %>
+                                <%= notifications[i].tytul %>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% } %>
+                <input type="hidden" name="operation" id="hidden_value">
+            </form>
+        </table>
+        <div>
+            <button id="select_all">Zaznacz wszystkie</button>
+            <button id="read">Oznacz jako przeczytane</button>
+            <button id="delete">Usuń</button>
+        </div>
+    </div>
+</fieldset>
+</div>
+
+<script>
+    $("#select_all").on("click", () => {
+        $("input[id='checkbox']").each((i, e) => {
+            e.checked = true;
+        });
+    })
+
+    $("#read").on("click", () => {
+        $("#hidden_value").val('read');
+        $("#send_form").submit();
+    })
+
+    $("#delete").on("click", () => {
+        $("#hidden_value").val('delete');
+        $("#send_form").submit();
+    })
+
+</script>
+
+<%- include('../templates/footer.ejs') %>

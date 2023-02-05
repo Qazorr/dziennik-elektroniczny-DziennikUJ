@@ -1,0 +1,131 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend>
+            <h2>Oceny</h2>
+        </legend>
+        <div class="grades-wrapper">
+            <div class="teacher-panel">
+                <div>
+                    <form action="" method="GET" id="change_class_form">
+                        <input type="hidden" name="class_id" id="change_class_id">
+                        <input type="hidden" name="subject_id" id="change_subject_id">
+                    </form>
+                    <select name="class_id" id="class">
+                        <% classes.forEach((subject) => { %>
+                        <% if (class_id == subject.klasa_id) { %>
+                        <option value="<%= subject.klasa_id %>" selected>Klasa: <%= subject.klasa_id %></option>
+                        <% } else { %>
+                        <option value="<%= subject.klasa_id %>">Klasa: <%= subject.klasa_id %></option>
+                        <% } %>
+                        <% }) %>
+                    </select>
+                    <select name="subject_id" id="subject" form="add_grades">
+                        <% subjects.forEach((subject) => { %>
+                        <% if (subject_id == subject.zajecia_id) { %>
+                        <option value="<%= subject.zajecia_id %>" selected><%= subject.nazwa %></option>
+                        <% } else { %>
+                        <option value="<%= subject.zajecia_id %>"><%= subject.nazwa %></option>
+                        <% } %>
+
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <div class="scrollable">
+
+                <table style="width: 100%;">
+                    <tr>
+                        <th class="fix_row">Zaznacz</th>
+                        <th class="fix_row">Osoba</th>
+                        <th class="fix_row">Oceny</th>
+                        <th class="fix_row">Średnia</th>
+                        <th class="fix_row">Ocena Końcowa</th>
+                    </tr>
+                    <% for(var i=0; i<students.length; i++) { %>
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="user_id" value="<%= students[i].user_id %>" form="add_grades">
+                        </td>
+                        <td>
+                            <a href="/teacher/grades/edit_grades/<%= subject_id %>/<%= students[i].user_id %>"
+                                style="position: relative;">
+                                <%= students[i].imie %> <%= students[i].nazwisko %>
+                                <svg style="position: absolute; top: -5%; right: -15%;" width="24px" height="24px"
+                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V12M9 15V12.5L17.75 3.75C18.4404 3.05964 19.5596 3.05964 20.25 3.75V3.75C20.9404 4.44036 20.9404 5.55964 20.25 6.25L15.5 11L11.5 15H9Z"
+                                        stroke="#000000" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                        </td>
+                        <td>
+                            <%= students_grades[i].toString().replaceAll(",", ", "); %>
+                        </td>
+                        <td>
+                            <% if (students_grades[i].length > 0) { %>
+                            <%= (students_grades[i].reduce((a,b) => a+b, 0) / students_grades[i].length).toFixed(2) %>
+                            <% } %>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <% } %>
+                </table>
+            </div>
+            <div class="teacher-panel">
+                <div>
+                    <button id="add_grades_button">Zbiorcze dodanie</button>
+                    <select name="grade_value" form="add_grades">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                    <form id="add_grades" action="" method="GET"></form>
+                    <%- include('../templates/messages.ejs') %>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+
+<div id="dialog-1" title="Potwierdź wstawienie">
+    <p>Czy na pewno chcesz wstawić zbiorczą ocenę?</p>
+</div>
+
+<script>
+    $("#class").on("change", () => {
+        $("#change_class_id").val($("#class").val());
+        $("#change_class_form").submit();
+    });
+    $("#subject").on("change", () => {
+        $("#change_subject_id").val($("#subject").val());
+        $("#change_class_id").val($("#class").val());
+        $("#change_class_form").submit();
+    });
+
+    $(function () {
+        $("#dialog-1").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: [{
+                text: "Potwierdź",
+                click: () => {
+                    $("#add_grades").submit();
+                }
+            }, ]
+        });
+
+        $("#add_grades_button").on("click", () => {
+            $("#dialog-1").dialog("open");
+        })
+    });
+</script>
+
+<%- include('../templates/footer.ejs') %>

@@ -1,0 +1,87 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<!-- reszta -->
+<div class="main-body-container">
+    <fieldset>
+        <legend>
+            <h2>Obecnosc</h2>
+        </legend>
+        <div class="attendance-wrapper">
+            <table>
+                <tr>
+                    <th rowspan="2">
+                        Data:
+                        <form method="get" action="/student/attendance" id="attendance_date">
+                            <input type="week" name="attendance_date" id="attendance_date_picker" value="<%= week %>" form="attendance_date">
+                        </form>
+                    </th>
+                    <th colspan="8">
+                        Nr. Lekcji
+                    </th>
+                    <th rowspan="2">O</th>
+                    <th rowspan="2">N</th>
+                    <th rowspan="2">S</th>
+                    <th rowspan="2">Z</th>
+                    <th rowspan="2">U</th>
+
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                </tr>
+                <% for (var date in days) { %>
+                <tr>
+                    <th><%=date%> (<%= days[date].day_name%>)</th>
+                    <% days[date].attendance.forEach((item) => { %>
+                    <td><%= item.frekwencja %></td>
+                    <% }); %>
+                    <td> <%= days[date].stats.O %> </td>
+                    <td> <%= days[date].stats.N %> </td>
+                    <td> <%= days[date].stats.S %> </td>
+                    <td> <%= days[date].stats.Z %> </td>
+                    <td> <%= days[date].stats.U %> </td>
+                </tr>
+                <% } %>
+
+            </table>
+
+            <table class="table-stat">
+                <tr>
+                    <th colspan="6">Ilość</th>
+                </tr>
+                <tr>
+                    <th>Obecności (O)</th>
+                    <th>Usprawiedliwionych (U)</th>
+                    <th>Nieusprawiedliwionych (N)</th>
+                    <th>Spoźnień (S)</th>
+                    <th>Zwolnień (Z)</th>
+                    <th>% frekwencji</th>
+                </tr>
+                <tr>
+                    <td><%=full_attendance.O %></td>
+                    <td><%=full_attendance.U %></td>
+                    <td><%=full_attendance.N %></td>
+                    <td><%=full_attendance.S %></td>
+                    <td><%=full_attendance.Z %></td>
+                    <td><%=frekwencja_percentage%>%</td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+</div>
+
+
+<%- include('../templates/footer.ejs') %>
+
+<script>
+    $("#attendance_date_picker").on('change', function () {
+        $("#attendance_date").submit();
+    })
+</script>

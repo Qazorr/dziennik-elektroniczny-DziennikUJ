@@ -1,0 +1,44 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend><h2>Dodaj ogłoszenie</h2></legend>
+    <div class="add-wrapper">
+        <form action="" method="POST" id="send_form">
+            <input type="text" name="title" id="" placeholder="Tytuł ogłoszenia: ">
+            <textarea name="description" id="" cols="30" rows="10" placeholder="Zawartość ogłoszenia:"></textarea>
+            <button type="button" id="submit_form">Dodaj</button>
+        </form>
+        <%- include('../templates/messages.ejs') %>
+    </div>
+</fieldset>
+</div>
+
+<div id="dialog-1" title="Potwierdź dodanie">
+    <p>Czy na pewno chcesz dodać ogłoszenie?</p>
+</div>
+
+<script>
+    $(function() {
+        $("#dialog-1").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: [
+              {
+                text: "Potwierdź",
+                click: () => {
+                    $("#send_form").submit();
+                }
+              },  
+            ]
+        });
+
+        $("#submit_form").on('click', () => {
+            $("#dialog-1").dialog('open');
+        })
+
+    })
+</script>
+
+<%- include('../templates/footer.ejs') %>

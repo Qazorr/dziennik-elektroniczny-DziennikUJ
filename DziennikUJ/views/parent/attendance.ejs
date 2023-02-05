@@ -1,0 +1,133 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<!-- reszta -->
+<div class="main-body-container">
+    <fieldset>
+        <legend>
+            <h2>Obecnosc</h2>
+        </legend>
+        <div class="attendance-wrapper">
+            <table>
+                <tr>
+                    <th rowspan="2">
+                        Data:
+                        <form method="get" action="/parent/attendance" id="attendance_date">
+                            <input type="week" name="attendance_date" id="attendance_date_picker" value="<%= week %>" form="attendance_date">
+                        </form>
+                    </th>
+                    <th colspan="8">
+                        Nr. Lekcji
+                    </th>
+                    <th rowspan="2">O</th>
+                    <th rowspan="2">N</th>
+                    <th rowspan="2">S</th>
+                    <th rowspan="2">Z</th>
+                    <th rowspan="2">U</th>
+                    <th rowspan="2">Zaznacz</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                </tr>
+                <% for (var date in days) { %>
+                <tr>
+                    <th><%=date%> (<%= days[date].day_name%>)</th>
+                    <% days[date].attendance.forEach((item) => { %>
+                    <td><%= item.frekwencja %></td>
+                    <% }); %>
+                    <td> <%= days[date].stats.O %> </td>
+                    <td> <%= days[date].stats.N %> </td>
+                    <td> <%= days[date].stats.S %> </td>
+                    <td> <%= days[date].stats.Z %> </td>
+                    <td> <%= days[date].stats.U %> </td>
+                    <td>
+                        <input 
+                            class="justify_attendance_checkbox"
+                            form="justify_attendance"
+                            type="checkbox" 
+                            name="justify" 
+                            value="<%=date%>"
+                            <% if (days[date].stats.N == 0) { %>
+                                disabled="disabled"
+                            <% } %>
+                        >
+                    </td>
+                </tr>
+                <% } %>
+                <form id="justify_attendance" action="/parent/justify_attendance" method="POST">
+                    <input type="hidden" name="redirect_to_attendance_date" value="<%= week %>">
+                </form>
+            </table>
+            <div class="teacher-panel">
+                <div>
+                    <button id="justify_attendance_button" style="float: right;">Usprawiedliw nieobecności</button>
+                </div>
+            </div>
+            <table class="table-stat">
+                <tr>
+                    <th colspan="6">Ilość</th>
+                </tr>
+                <tr>
+                    <th>Obecności (O)</th>
+                    <th>Usprawiedliwionych (U)</th>
+                    <th>Nieusprawiedliwionych (N)</th>
+                    <th>Spoźnień (S)</th>
+                    <th>Zwolnień (Z)</th>
+                    <th>% frekwencji</th>
+                </tr>
+                <tr>
+                    <td><%=full_attendance.O %></td>
+                    <td><%=full_attendance.U %></td>
+                    <td><%=full_attendance.N %></td>
+                    <td><%=full_attendance.S %></td>
+                    <td><%=full_attendance.Z %></td>
+                    <td><%=frekwencja_percentage%>%</td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+</div>
+
+<div id="dialog-1" title="Powód">
+</div>
+
+<script>
+    $("#attendance_date_picker").on('change', function () {
+        $("#attendance_date").submit();
+    })
+
+    $(function () {
+        $("#dialog-1").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: [
+              {
+                text: "Wyślij",
+                click: () => {
+                    if ($("#justift-note-textarea").val().length > 1)
+                        $("#justify_attendance").submit();
+                }
+              },  
+            ]
+        });
+        $("#dialog-1").html(`
+            <p>Jaki był powód nieobecności?</p>
+            <textarea cols="30" rows="10" id="justift-note-textarea"></textarea>
+        `);
+    })
+
+    $("#justify_attendance_button").on('click', function () {
+        if ($(".justify_attendance_checkbox").toArray().some(checkbox => checkbox.checked == true))
+            $("#dialog-1").dialog("open");
+    })
+</script>
+
+
+<%- include('../templates/footer.ejs') %>

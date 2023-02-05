@@ -1,0 +1,53 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend><h2>Zarządzaj klasami</h2></legend>
+    <div class="manage-wrapper">
+        <form action="" method="POST" id="send_form">
+            <input type="text" name="class_id" placeholder="Numer klasy: ">
+            <input type="text" name="year" placeholder="Rok rozpoczęcia: ">
+            <select name="teacher">
+                <option value="" selected disabled>Wychowawca: </option>
+                <% for(var i=0; i<teachers.length; i++) { %>
+                    <option value="<%= teachers[i].user_id %>">Wychowawca: <%= teachers[i].imie %> <%= teachers[i].nazwisko %></option>
+                <% } %>
+            </select>
+            <button type="button" id="submit_form">Dodaj</button>
+        </form>
+        <%- include('../templates/messages.ejs') %>
+        <div class="go-back-wrapper">
+            <button class="go-back-btn" onclick="location.href='/admin/manage_classes'">Cofnij</button>
+        </div>
+    </div>
+</fieldset>
+</div>
+
+<div id="dialog-1" title="Potwierdź stworzenie">
+    <p>Czy na pewno chcesz stworzyć klasę?</p>
+</div>
+
+<script>
+    $(function() {
+        $("#dialog-1").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: [
+              {
+                text: "Potwierdź",
+                click: () => {
+                    $("#send_form").submit();
+                }
+              },  
+            ]
+        });
+
+        $("#submit_form").on('click', () => {
+            $("#dialog-1").dialog('open');
+        })
+
+    })
+</script>
+
+<%- include('../templates/footer.ejs') %>

@@ -1,0 +1,128 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend><h2>Prace domowe</h2></legend>
+        <div class="homework-wrapper">
+        <div class="teacher-panel">
+            <div>
+                <div>
+                    <form action="" method="GET" id="change_class_form">
+                        <input type="hidden" name="class_id" id="change_class_id">
+                    </form>
+                    <select name="class_id" id="class">
+                        <% classes.forEach((subject) => { %>
+                            <% if (class_id == subject.klasa_id) { %>
+                                <option value="<%= subject.klasa_id %>" selected>Klasa: <%= subject.klasa_id %></option>
+                            <% } else { %>
+                                <option value="<%= subject.klasa_id %>">Klasa: <%= subject.klasa_id %></option>
+                            <% } %>
+                        <% }) %>
+                    </select>
+                    <select name="subject_id" id="subject" form="add_homework">
+                        <% subjects.forEach((subject) => { %>
+                            <option value="<%= subject.zajecia_id %>"><%= subject.nazwa %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <form action="" method="POST" id="add_homework">
+                    <label style="margin: .5rem;" for="start">Termin oddania: </label>
+                    <input style="padding: .5rem;" type="date" id="start" name="deadline">
+                    <label style="margin: .5rem;" for="title">Tytuł: </label>
+                    <input style="padding: .5rem;" type="text" id="title" name="title">
+                    <label style="margin: .5rem;" for="description">Opis: </label>
+                    <textarea name="description" id="" cols="50" rows="10" form="add_homework"></textarea>
+                </form>
+                <div class="teacher-panel">
+                    <div>
+                        <button id="submit_form" style="float: left;">Dodaj pracę domową</button>
+                    </div>
+                </div>
+                <%- include('../templates/messages.ejs') %>
+            </div>
+        </div>
+            <table>
+                <tr>
+                    <td style="border: 0; "></td>
+                    <th>Klasa</th>
+                    <th>Przedmiot</th>
+                    <th>Temat</th>
+                    <th>Termin</th>
+                    <th>Treść</th>
+                </tr>
+                <form action="/teacher/homeworks/delete_homework" method="POST" id="form_delete_homework">
+                    <input type="hidden" name="to_delete" id="input_to_delete">
+                </form>
+                <% for(var i=0; i<homeworks.length; i++) { %>
+                    <tr>
+                        <td>
+                            <button id="delete_homework_btn" style="padding: .5rem; width: 100%;" 
+                            onclick="$('#input_to_delete').val('<%= homeworks[i].zadanie_id %>'); $('#dialog-2').dialog('open');">Usuń</button>
+                        </td>
+                        <td><%= homeworks[i].klasa_id %></td>
+                        <td><%= homeworks[i].nazwa %></td>
+                        <td><%= homeworks[i].tytul %></td>
+                        <td><%= homeworks[i].termin_oddania %></td>
+                        <td><%= homeworks[i].opis %></td>
+                    </tr>
+                <% } %>
+            </table>
+        </div>
+    </fieldset>
+</div>
+
+<div id="dialog-1" title="Potwierdź dodanie">
+    <p>Czy na pewno chcesz dodać pracę domową?</p>
+</div>
+
+<div id="dialog-2" title="Potwierdź usunięcie">
+    <p>Czy na pewno chcesz usunąć pracę domową?</p>
+</div>
+
+<script>
+    $(function() {
+        $("#dialog-1").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: [
+              {
+                text: "Potwierdź",
+                click: () => {
+                    $("#add_homework").submit();
+                }
+              },  
+            ]
+        });
+
+        $("#submit_form").on('click', () => {
+            $("#dialog-1").dialog('open');
+        })
+
+    });
+
+    $(function() {
+        $("#dialog-2").dialog({
+            autoOpen: false,
+            modal: true,
+            buttons: [
+              {
+                text: "Potwierdź",
+                click: () => {
+                    $("#form_delete_homework").submit();
+                }
+              },  
+            ]
+        });
+    });
+
+    $("#add_homework_button").on('click', function () {
+        $("#dialog-1").dialog("open");
+    });
+    $("#class").on("change", () => {
+        $("#change_class_id").val($("#class").val());
+        $("#change_class_form").submit();
+    });
+</script>
+
+<%- include('../templates/footer.ejs') %>

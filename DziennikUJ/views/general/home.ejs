@@ -1,0 +1,28 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend>
+            <h2>Ogłoszenia</h2>
+        </legend>
+        <div class="notes-wrapper">
+            <% if (typeof(current_student) != 'undefined') { %>
+            <% if (current_student == 0) { %>
+            <p style="color: red; font-weight:bold;">Do konta rodzica nie są przypisani żadni uczniowie</p>
+            <% } %>
+            <% } %>
+            <% for (var i=0; i<notes.length; i++) { %>
+            <div class="note">
+                <span class="note-title">
+                    <h3><%= notes[i].tytul %></h3>
+                </span>
+                <span class="note-body">
+                    <%= notes[i].tresc %>
+                </span>
+            </div>
+            <% } %>
+    </fieldset>
+</div>
+
+<%- include('../templates/footer.ejs') %>

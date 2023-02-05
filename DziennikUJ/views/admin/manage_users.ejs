@@ -1,0 +1,75 @@
+<%- include('../templates/header.ejs') %>
+<%- include('../templates/navbar.ejs') %>
+
+<div class="main-body-container">
+    <fieldset>
+        <legend>
+            <h2>Zarządzaj użytkownikami</h2>
+        </legend>
+        <div class="notes-wrapper">
+            <div class="manage-wrapper">
+                <form action="">
+                    <div class="manage-users-input-wrapper">
+                        <div class="align-left">
+                            <form action="/admin/manage_users" method="get" name="search_users" id="search_users">
+                                <div class="account-name-input">
+                                    <input type="text" name="first_name" id="first_name" placeholder="Imie">
+                                    <input type="text" name="last_name" id="last_name" placeholder="Nazwisko">
+                                    <input type="text" name="email" id="email" placeholder="Email">
+                                </div>
+                                <div class="account-type-picker">
+                                    <div class="radio">
+                                        <input type="radio" name="account_type" id="nauczyciel" value="nauczyciel">
+                                        <label for="nauczyciel">Nauczyciel</label>
+                                    </div>
+                                    <div class="radio">
+                                        <input type="radio" name="account_type" id="rodzic" value="rodzic">
+                                        <label for="rodzic">Rodzic</label>
+                                    </div>
+                                    <div class="radio">
+                                        <input type="radio" name="account_type" id="uczen" value="uczen">
+                                        <label for="uczen">Uczeń</label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="align-right">
+                            <button type="button" id="create_user">Stwórz</button>
+                            <button>Szukaj</button>
+                        </div>
+                    </div>
+                    <div class="scrollable">
+                        <table>
+                            <tr>
+                                <th class="fix_row">Imię i nazwisko</th>
+                                <th class="fix_row">Data urodzenia</th>
+                                <th class="fix_row">Email</th>
+                                <th class="fix_row">Rola</th>
+                                <th class="fix_row">Edytuj</th>
+                            </tr>
+                            <% users.forEach(element => { %>
+                            <tr>
+                                <td><%= element.imie %> <%= element.nazwisko %></td>
+                                <td><%= element.data_urodzenia %></td>
+                                <td><%= element.email %></td>
+                                <td><%= element.rola_name %></td>
+                                <td><a href="<%=`/admin/edit_user/${element.user_id}`%>">Edytuj</a></td>
+                            </tr>
+                            <% }); %>
+                        </table>
+                    </div>
+                </form>
+            </div>
+    </fieldset>
+</div>
+
+<%- include('../templates/footer.ejs') %>
+
+<script>
+    $("#create_user").click(function () {
+        var first_name = $("input[name='first_name']").val();
+        var last_name = $("input[name='last_name']").val();
+        var url = `/admin/create_user?first_name=${first_name}&last_name=${last_name}`;
+        window.location.href = url;
+    });
+</script>
